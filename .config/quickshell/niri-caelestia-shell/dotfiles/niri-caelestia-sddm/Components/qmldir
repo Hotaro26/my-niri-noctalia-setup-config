@@ -1,0 +1,9 @@
+module Components
+LockContent  1.0 LockContent.qml
+ClockWidget  1.0 ClockWidget.qml
+AvatarWidget 1.0 AvatarWidget.qml
+BottomBar    1.0 BottomBar.qml
+PowerButton  1.0 PowerButton.qml
+PillBox      1.0 PillBox.qml
+Colors       1.0 Colors.qml
+Settings     1.0 Settings.qml

@@ -1,0 +1,43 @@
+spawn-sh-at-startup "qs -c niri-caelestia-shell"
+
+binds {
+    
+    Mod+Space repeat=false { spawn-sh "qs -c niri-caelestia-shell ipc call drawers toggle launcher"; }
+    Mod+V repeat=false { spawn-sh "qs -c niri-caelestia-shell ipc call clipboard open"; } 
+    Mod+L allow-when-locked=true { spawn-sh "qs -c niri-caelestia-shell ipc call lock lock"; }
+    Mod+D {spawn-sh "qs -c niri-caelestia-shell ipc call drawers toggle dashboard";}
+    Mod+I {spawn-sh "qs -c niri-caelestia-shell ipc call controlCenter open";}
+    Ctrl+Alt+Delete {spawn-sh "qs -c niri-caelestia-shell ipc call drawers toggle session"; }
+    Mod+Escape {spawn-sh "qs -c niri-caelestia-shell ipc call drawers toggle session"; }
+    Mod+N {spawn-sh "qs -c niri-caelestia-shell ipc call quicktoggles toggle";}
+
+    // Region picker 
+    Mod+Shift+S { spawn-sh "qs -c niri-caelestia-shell ipc call picker openFreeze"; }
+    Mod+Shift+X { spawn-sh "qs -c niri-caelestia-shell ipc call picker regionOcr"; }
+    Mod+Shift+A { spawn-sh "qs -c niri-caelestia-shell ipc call picker regionSearch"; }
+    
+    // Volume (hardware keys)
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
+    Alt+XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 1%+"; }
+    Alt+XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
+    XF86AudioMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    // Brightness (hardware keys)
+    XF86MonBrightnessUp {spawn-sh "qs -c niri-caelestia-shell ipc call brightness set +5%"; }
+    XF86MonBrightnessDown {spawn-sh "qs -c niri-caelestia-shell ipc call brightness set 5%-"; }
+    Alt+XF86MonBrightnessUp {spawn-sh "qs -c niri-caelestia-shell ipc call brightness set +1%"; }
+    Alt+XF86MonBrightnessDown {spawn-sh "qs -c niri-caelestia-shell ipc call brightness set 1%-"; }
+
+    // Manga and Novel Reader
+    Mod+M {spawn-sh "qs -c niri-caelestia-shell ipc call mangaReader toggle";}
+    Mod+Shift+M {spawn-sh "qs -c niri-caelestia-shell ipc call novelReader toggle";}
+}
+
+layer-rule {
+    match namespace="quickshell:Backdrop"
+    place-within-backdrop true
+    opacity 1.0
+}
+

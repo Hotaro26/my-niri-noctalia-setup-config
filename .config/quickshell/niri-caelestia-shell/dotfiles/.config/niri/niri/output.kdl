@@ -1,0 +1,11 @@
+// --- Output Configuration ---
+output "eDP-1" {
+    mode "1920x1080@60.008"
+    position x=0 y=0
+}
+
+/-output "eDP-2" {
+    mode "2560x1600@239.998993"
+    position x=2560 y=0
+    variable-refresh-rate
+}

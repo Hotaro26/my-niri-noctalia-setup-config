@@ -1,0 +1,93 @@
+// ---------------- Global Defaults ----------------
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+    tiled-state true
+    draw-border-with-background false
+}
+
+// ---------------- Terminals ----------------
+window-rule {
+    match app-id=r#"^(org\.wezfurlong\.wezterm|Alacritty|com\.mitchellh\.ghostty|kitty)$"#
+    // open-maximized true
+}
+
+// ---------------- GNOME / GTK Apps ----------------
+window-rule {
+    match app-id=r#"^org\.gnome\."#
+    draw-border-with-background false
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+// Settings / control panels (half width, tiled)
+window-rule {
+    match app-id=r#"(?i)(gnome-control-center|pavucontrol|nm-connection-editor|kcm_.*|systemsettings)"#
+    default-column-width { proportion 0.5; }
+    open-floating false
+}
+
+// ---------------- Floating Utility Apps ----------------
+window-rule {
+    match app-id=r#"(?i)(gnome-calculator|galculator|blueman-manager|org\.gnome\.nautilus|steam|xdg-desktop-portal|mpv|org\.quickshell)"#
+    open-floating true
+}
+
+// KDE utilities (extra catch)
+window-rule {
+    match app-id=r#"(?i)(kcm_networkmanagement|kcm_bluetooth)"#
+    open-floating true
+}
+
+// ---------------- VS Code (all variants) ----------------
+window-rule {
+    match app-id=r#"^(code|code-oss|vscodium|codium|code-insiders|visual-studio-code|com\.visualstudio\.code|com\.visualstudio\.code-oss)$"#
+    open-maximized true
+}
+
+// ---------------- Browsers ----------------
+window-rule {
+    match app-id=r#"(?i)(firefox|librewolf|waterfox|chrom(e|ium)|brave|edge|vivaldi|opera|epiphany|falkon|qutebrowser|torbrowser|zen)"#
+    match app-id=r#"(?i)(org\.mozilla\.firefox|com\.google\.chrome|com\.brave\.browser|org\.chromium\.chromium)"#
+    match app-id=r#".*Default$"#
+
+    draw-border-with-background false
+    open-maximized true
+}
+
+// PiP + meeting apps
+window-rule {
+    match app-id=r#"(?i)(firefox|chrom(e|ium)|brave)"# title="(?i)(Picture-in-Picture|PiP)"
+    match app-id=r#"(?i)(zoom|teams|discord)"#
+    open-floating true
+}
+
+// ---------------- Special Floating Terminals ----------------
+window-rule {
+    match app-id="term_fl"
+    match app-id="kitty" title=r#"(?i)(fl_term|System Info)"#
+    default-column-width { proportion 0.50; }
+    default-window-height { proportion 0.50; }
+    open-floating true
+    open-maximized-to-edges false
+}
+
+// ---------------- Blur / Transparency ----------------
+// window-rule {
+//     opacity 0.9
+//     background-effect {
+//         blur true
+//         noise 0.3
+//         saturation 5
+//     }
+// }
+//
+// window-rule {
+//     match is-active=false
+//     opacity 0.8
+//     background-effect {
+//         blur true
+//         noise 0.3
+//         saturation 5
+//     }
+// }

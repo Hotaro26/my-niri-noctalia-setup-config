@@ -1,0 +1,7 @@
+gestures {
+    hot-corners {
+        off
+        top-right
+        bottom-right
+    }
+}

@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# niri-caelestia-shell v2 Modular Installer
+# Inspired by dots-hyprland/setup
+
+cd "$(dirname "$0")"
+REPO_ROOT="$(cd ../../.. && pwd)"
+export REPO_ROOT
+
+# Sourcing core libraries
+source ./sdata/lib/environment-variables.sh
+source ./sdata/lib/functions.sh
+source ./sdata/lib/package-installers.sh
+source ./sdata/lib/dist-determine.sh
+
+# Function to handle yes/no confirmations
+function tui_confirm() {
+  local prompt="$1"
+  local default="${2:-yes}"
+  local p
+  
+  while true; do
+    if [[ "$default" == "yes" ]]; then
+      read -p "$prompt [Y/n]: " p
+      [[ -z "$p" || "$p" =~ ^[Yy]$ ]] && return 0
+      [[ "$p" =~ ^[Nn]$ ]] && return 1
+    else
+      read -p "$prompt [y/N]: " p
+      [[ -z "$p" || "$p" =~ ^[Nn]$ ]] && return 1
+      [[ "$p" =~ ^[Yy]$ ]] && return 0
+    fi
+  done
+}
+
+prevent_sudo_or_root
+set -e
+
+showhelp_global(){
+printf "${STY_CYAN}niri-caelestia-shell Modular Setup (v2)${STY_RST}
+
+Syntax:
+  $0 <subcommand> [OPTIONS]...
+
+Subcommands:
+  install        Full installation (Deps + Setup + Files + SDDM).
+  install-deps   Stage 1: Install system dependencies.
+  install-setups Stage 2: Configure permissions, services, and groups.
+  install-files  Stage 3: Copy configuration files and assets.
+  install-sddm   Stage 4: Setup SDDM login theme.
+  uninstall      Uninstall niri-caelestia-shell.
+  help           Show this help message.
+
+For each subcommand, use -h for details:
+  $0 <subcommand> -h
+"
+}
+
+case $1 in
+  ""|help|--help|-h) showhelp_global; exit;;
+  install|uninstall)
+    SUBCMD_NAME=$1
+    SUBCMD_DIR=./sdata/subcmd-$1
+    shift;;
+  install-deps|install-setups|install-files|install-sddm)
+    SUBCMD_NAME=$1
+    SUBCMD_DIR=./sdata/subcmd-install
+    shift;;
+  *) printf "${STY_RED}Unknown subcommand \"$1\".${STY_RST}\n"; showhelp_global; exit 1;;
+esac
+
+if [[ -f "${SUBCMD_DIR}/options.sh" ]]; then
+  source "${SUBCMD_DIR}/options.sh"
+fi
+
+case ${SUBCMD_NAME} in
+  install)
+    for function in "${print_os_group_id_functions[@]}"; do $function; done
+    pause
+    sudo_init_keepalive
+    trap sudo_stop_keepalive EXIT INT TERM
+    
+    if [[ "${SKIP_ALLGREETING}" != true ]]; then
+      source ${SUBCMD_DIR}/0.greeting.sh
+    fi
+    if [[ "${SKIP_ALLDEPS}" != true ]]; then
+      source ${SUBCMD_DIR}/1.deps-router.sh
+    fi
+    if [[ "${SKIP_ALLSETUPS}" != true ]]; then
+      source ${SUBCMD_DIR}/2.setups.sh
+    fi
+    if [[ "${SKIP_ALLFILES}" != true ]]; then
+      source ${SUBCMD_DIR}/3.files.sh
+    fi
+    if [[ "${SKIP_ALLSDDM}" != true ]]; then
+      source ${SUBCMD_DIR}/4.sddm.sh
+    fi
+    ;;
+  install-deps)
+    sudo_init_keepalive
+    trap sudo_stop_keepalive EXIT INT TERM
+    source ${SUBCMD_DIR}/1.deps-router.sh
+    ;;
+  install-setups)
+    sudo_init_keepalive
+    trap sudo_stop_keepalive EXIT INT TERM
+    source ${SUBCMD_DIR}/2.setups.sh
+    ;;
+  install-files)
+    source ${SUBCMD_DIR}/3.files.sh
+    ;;
+  install-sddm)
+    sudo_init_keepalive
+    trap sudo_stop_keepalive EXIT INT TERM
+    source ${SUBCMD_DIR}/4.sddm.sh
+    ;;
+  *)
+    source ${SUBCMD_DIR}/0.run.sh
+    exit
+    ;;
+esac

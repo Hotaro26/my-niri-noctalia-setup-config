@@ -1,0 +1,331 @@
+spawn-at-startup "qs" "-c" "niri-caelestia-shell"
+
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+    draw-border-with-background false
+    // opacity 0.95        //blur for all windows/apps
+}
+// Maximize discord/zen/telegram by default.
+window-rule {
+    match app-id="discord$"
+
+    open-maximized true
+}
+window-rule {
+    match app-id="zen"
+    open-maximized true
+}
+window-rule {
+    match app-id="org.telegram.desktop"
+    open-maximized true
+}
+// Open the zen-browser picture-in-picture window as floating.
+window-rule {
+    match app-id="zen" title="^Picture-in-Picture$"
+    open-floating true
+        default-column-width { fixed 480; }
+    default-window-height { fixed 270; }
+}
+window-rule {
+    match app-id="ai.moeru.airi" 
+    open-floating true
+    default-column-width { fixed 400; }
+    default-window-height { fixed 370; }
+}
+window-rule {
+    match app-id="ai.moeru.airi" 
+    open-floating true
+    default-column-width { fixed 400; }
+    default-window-height { fixed 370; }
+}
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
+layer-rule {
+    match namespace="^noctalia-overview*"
+    place-within-backdrop true
+
+        shadow {
+        on
+        // off
+        softness 40
+        spread 5
+        offset x=0 y=5
+        draw-behind-window true
+        color "#00000064"
+        // inactive-color "#00000064"
+    }
+}
+/* Noctalia: blur everywhere without xray for a better look */
+layer-rule {
+  match namespace="^noctalia-(background|launcher-overlay|dock)-.*$"
+  background-effect {
+    xray false
+  }
+}
+/* Apps: blur them all without xray for a better look */
+window-rule {
+  background-effect {
+    blur true
+    xray false
+  }
+}
+//layout
+layout{
+  gaps 9
+ // center-focused-column "always"
+ 
+    // Make all new columns tabbed by default
+     default-column-display "tabbed"
+
+    // You may also want to hide the tab indicator
+    // when there's only a single window in a column.
+    tab-indicator {
+        hide-when-single-tab
+        width 8
+        gap 8
+        length total-proportion=1.0
+        position "top"
+        place-within-column
+    }
+        shadow {
+        on
+    }
+        insert-hint {
+        // off
+        color "#ffc87f80"
+        gradient from="#ffbb6680" to="#ffc88080" angle=45 relative-to="workspace-view"
+    }
+}
+
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+        }
+    }
+
+    touchpad {
+        tap
+        tap-button-map "left-right-middle"
+        natural-scroll
+        dwt
+        scroll-method "two-finger"
+    }
+
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+binds {
+  Mod+Shift+S { spawn "/home/hotaro/.local/bin/switch-shell.sh"; }
+  Mod+P { toggle-window-floating; }
+ // Session menu
+Mod+Shift+E repeat=false { spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "sessionMenu" "toggle"; }
+    Mod+Return { spawn "kitty"; }
+    Mod+Q { close-window; }
+      Mod+A { close-window; }
+   // Mod+Shift+E { quit; }
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    
+
+    Mod+Space { spawn "caelestia-launcher.sh"; }
+    Mod+V { spawn-sh "qs -c niri-caelestia-shell ipc call clipboard toggle"; }
+    Mod+S { spawn-sh "qs -c niri-caelestia-shell ipc call controlCenter open"; }
+    Mod+Comma { spawn-sh "qs -c niri-caelestia-shell ipc call drawers toggle dashboard"; }
+
+    F3 { spawn-sh "qs -c niri-caelestia-shell ipc call volume setFor @DEFAULT_AUDIO_SINK@ +5%"; }
+    F2 { spawn-sh "qs -c niri-caelestia-shell ipc call volume setFor @DEFAULT_AUDIO_SINK@ -5%"; }
+    F1 { spawn-sh "qs -c niri-caelestia-shell ipc call volume toggleMute @DEFAULT_AUDIO_SINK@"; }
+    F5 { spawn-sh "qs -c niri-caelestia-shell ipc call brightness setFor eDP-1 +5%"; }
+    F4 { spawn-sh "qs -c niri-caelestia-shell ipc call brightness setFor eDP-1 -5%"; }
+    Mod+W {spawn "zen-browser";}
+    Mod+E {spawn "nautilus";}
+    Mod+D { maximize-column; }
+    Mod+F { maximize-window-to-edges; }
+    Mod+Shift+F {fullscreen-window; }
+    Mod+O { toggle-overview; }
+    Mod+k { focus-column-left; }
+    Mod+J { focus-window-down; }
+   // Mod+H { focus-window-up; }
+    Mod+L { focus-column-right; }
+
+    Mod+Shift+L allow-when-locked=true { spawn-sh "qs -c niri-caelestia-shell ipc call lock lock"; }
+
+        Mod+H {
+        spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "sessionMenu" "lockAndSuspend";
+    }
+     Print {
+        screenshot;
+    }
+    Ctrl+Print {
+        screenshot-screen write-to-disk=false;
+    }
+        Alt+Print {
+        screenshot-window write-to-disk=false;
+    
+    }
+
+     Mod+TouchpadScrollDown { spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "volume" "increase"; }
+     Mod+TouchpadScrollUp { spawn "qs" "-c" "niri-caelestia-shell" "ipc" "call" "volume" "decrease"; }
+    //closes focused window on click
+    Mod+MouseLeft    { close-window; }
+    Mod+MouseRight   { close-window; }
+    Mod+MouseMiddle  { close-window; }
+    Mod+MouseForward { close-window; }
+    Mod+MouseBack    { close-window; }
+}
+switch-events {
+   // lid-close { spawn "notify-send" "The laptop lid is closed!"; }
+    lid-open { spawn "notify-send" "The laptop lid is open!"; }
+   // tablet-mode-on { spawn "bash" "-c" "gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true"; }
+   // tablet-mode-off { spawn "bash" "-c" "gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled false"; }
+}
+cursor {
+    // Hide the cursor after one second of inactivity.
+    hide-after-inactive-ms 5000
+    hide-when-typing
+    xcursor-theme "Bibata-Modern-Classic"
+}
+hotkey-overlay {
+    skip-at-startup
+}
+
+animations{
+      workspace-switch {
+        spring damping-ratio=2.0 stiffness=1000 epsilon=0.0001
+    }
+
+        window-open {
+        duration-ms 150
+        curve "ease-out-expo"
+    }
+
+    window-close {
+        duration-ms 150
+        curve "ease-out-quad"
+    }
+        overview-open-close {
+        spring damping-ratio=2.0 stiffness=800 epsilon=0.0001
+    }
+        horizontal-view-movement {
+        spring damping-ratio=2.0 stiffness=800 epsilon=0.0001
+    }
+
+    window-movement {
+        spring damping-ratio=1.7 stiffness=800 epsilon=0.0001
+    }
+        window-resize {
+        spring damping-ratio=2.0 stiffness=800 epsilon=0.0001
+    }
+       config-notification-open-close {
+        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+    }
+        screenshot-ui-open {
+        duration-ms 200
+        curve "ease-out-quad"
+    }
+    recent-windows-close {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.001
+    }
+}
+
+gestures {
+    dnd-edge-view-scroll {
+        trigger-width 30
+        delay-ms 100
+        max-speed 1500
+    }
+
+    dnd-edge-workspace-switch {
+        trigger-height 50
+        delay-ms 100
+        max-speed 1500
+    }
+
+    hot-corners {
+        // off
+        top-left
+         top-right
+         bottom-left
+         bottom-right
+    }
+}
+
+recent-windows {
+    // off
+    debounce-ms 750
+
+    open-delay-ms 150
+
+    highlight {
+        active-color "#999999ff"
+        urgent-color "#ff9999ff"
+        padding 30
+        corner-radius 14
+    }
+
+    previews {
+        max-height 480
+        max-scale 0.5
+    }
+
+    binds {
+        Alt+Tab         { next-window; }
+        Alt+Shift+Tab   { previous-window; }
+        Alt+grave       { next-window     filter="app-id"; }
+        Alt+Shift+grave { previous-window filter="app-id"; }
+
+        Mod+Tab         { next-window; }
+        Mod+Shift+Tab   { previous-window; }
+        Mod+grave       { next-window     filter="app-id"; }
+        Mod+Shift+grave { previous-window filter="app-id"; }
+    }
+}
+
+layer-rule {
+    match namespace="quickshell:Backdrop"
+    place-within-backdrop true
+}
+
+layer-rule {
+    match namespace="^quickshell:.*$"
+    exclude namespace="quickshell:Backdrop"
+    background-effect {
+        blur true
+    }
+}
+
+overview {
+    zoom 0.60
+    backdrop-color "#00000000"
+
+    workspace-shadow {
+        // off
+        softness 40
+        spread 10
+        offset x=0 y=10
+        color "#00000050"
+    }
+}
+
+environment {
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+    XDG_SESSION_DESKTOP "niri"
+}
+screenshot-path null
+prefer-no-csd
+include "./window_rules.kdl"
+
+

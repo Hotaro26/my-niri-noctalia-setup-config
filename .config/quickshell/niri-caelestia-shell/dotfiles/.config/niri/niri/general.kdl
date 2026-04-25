@@ -1,0 +1,27 @@
+// --- General Settings ---
+config-notification {
+    disable-failed
+}
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd
+
+cursor {
+    xcursor-theme "Bibata-Modern-Classic"
+    xcursor-size 24
+}
+
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
+overview {
+  workspace-shadow {
+    off
+  }
+}

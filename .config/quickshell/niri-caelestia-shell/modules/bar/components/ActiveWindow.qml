@@ -1,0 +1,151 @@
+pragma ComponentBehavior: Bound
+
+import qs.components
+import qs.services
+import qs.utils
+import qs.config
+import QtQuick
+
+Item {
+    id: root
+
+    required property var bar
+    required property Brightness.Monitor monitor
+    property color colour: Colours.palette.m3primary
+
+    // Column count indicator
+    readonly property var activeWindows: Niri.getActiveWorkspaceWindows()
+    readonly property int columnCount: {
+        const cols = new Set();
+        for (const w of activeWindows) {
+            if (w.layout?.pos_in_scrolling_layout)
+                cols.add(w.layout.pos_in_scrolling_layout[0]);
+        }
+        return cols.size;
+    }
+    readonly property int focusedColumn: {
+        const fw = Niri.focusedWindow;
+        if (!fw?.layout?.pos_in_scrolling_layout)
+            return 0;
+        const focusedX = fw.layout.pos_in_scrolling_layout[0];
+        const cols = [];
+        for (const w of activeWindows) {
+            if (w.layout?.pos_in_scrolling_layout)
+                cols.push(w.layout.pos_in_scrolling_layout[0]);
+        }
+        const sorted = [...new Set(cols)].sort((a, b) => a - b);
+        return sorted.indexOf(focusedX) + 1;
+    }
+
+    readonly property int maxHeight: {
+        const otherModules = bar.children.filter(c => c.id && c.item !== this && c.id !== "spacer");
+        const otherHeight = otherModules.reduce((acc, curr) => acc + curr.height, 0);
+        // Length - 2 cause repeater counts as a child
+        return bar.height - otherHeight - bar.spacing * (bar.children.length - 1) - bar.vPadding * 2;
+    }
+    property Title current: text1
+
+    readonly property string windowTitle: Niri.focusedWindowTitle ?? qsTr("Desktop")
+
+    function getCompactName() {
+        if (!root.windowTitle || root.windowTitle === qsTr("Desktop"))
+            return qsTr("Desktop");
+        // " - " (standard hyphen), " — " (em dash), " – " (en dash)
+        const parts = root.windowTitle.split(/\s+[\-\u2013\u2014]\s+/);
+        if (parts.length > 1)
+            return parts[parts.length - 1].trim();
+        return root.windowTitle;
+    }
+
+
+
+
+    clip: true
+    implicitWidth: Math.max(icon.implicitWidth, current.implicitHeight, colIndicator.implicitWidth)
+    implicitHeight: icon.implicitHeight + current.implicitWidth + current.anchors.topMargin + (colIndicator.visible ? colIndicator.implicitHeight + Appearance.spacing.xs : 0)
+
+    MaterialIcon {
+        id: icon
+
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        animate: true
+        text: Icons.getAppCategoryIcon(Niri.focusedWindowClass, "desktop_windows")
+        color: root.colour
+    }
+
+    StyledText {
+        id: colIndicator
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+
+        visible: root.columnCount > 1
+        text: `${root.focusedColumn}/${root.columnCount}`
+        color: Colours.palette.m3onSurfaceVariant
+        font.pointSize: Appearance.font.size.labelSmall
+        font.family: Appearance.font.family.mono
+    }
+
+    Title {
+        id: text1
+    }
+
+    Title {
+        id: text2
+    }
+
+    TextMetrics {
+        id: metrics
+
+        text: Config.bar.activeWindow.compact ? root.getCompactName() : root.windowTitle //Niri.focusedWindowTitle ?? qsTr("Desktop")
+        font.pointSize: Appearance.font.size.bodySmall
+        font.family: Appearance.font.family.mono
+        elide: Qt.ElideRight
+        elideWidth: root.maxHeight - icon.height
+
+        onTextChanged: {
+            const next = root.current === text1 ? text2 : text1;
+            next.text = elidedText;
+            root.current = next;
+        }
+        onElideWidthChanged: root.current.text = elidedText
+    }
+
+    Behavior on implicitHeight {
+        Anim {
+            easing.bezierCurve: Appearance.anim.curves.emphasized
+        }
+    }
+
+    component Title: StyledText {
+        id: text
+
+        anchors.horizontalCenter: icon.horizontalCenter
+        anchors.top: icon.bottom
+        anchors.topMargin: Appearance.spacing.sm
+
+        font.pointSize: metrics.font.pointSize
+        font.family: metrics.font.family
+        color: root.colour
+        opacity: root.current === this ? 1 : 0
+
+        transform: [
+            Translate {
+                x: Config.bar.activeWindow.inverted ? -implicitWidth + text.implicitHeight : 0
+            },
+            Rotation {
+                angle: Config.bar.activeWindow.inverted ? 270 : 90
+                origin.x: text.implicitHeight / 2
+                origin.y: text.implicitHeight / 2
+            }
+        ]
+
+        width: implicitHeight
+        height: implicitWidth
+
+        Behavior on opacity {
+            Anim {}
+        }
+    }
+}

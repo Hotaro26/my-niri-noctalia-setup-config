@@ -1,0 +1,16 @@
+// --- Input Configuration ---
+input {
+    focus-follows-mouse
+    keyboard {
+        xkb {
+            layout "us"
+        }
+        numlock
+        repeat-delay 250
+        repeat-rate 50
+    }
+    touchpad {
+        tap
+        natural-scroll
+    }
+}

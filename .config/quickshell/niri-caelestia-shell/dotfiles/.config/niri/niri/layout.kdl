@@ -1,0 +1,42 @@
+// --- Layout Configuration ---
+layout {
+    gaps 20
+    background-color "transparent"
+    center-focused-column "never"
+    
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 0.80
+        proportion 1.0
+    }
+   
+    focus-ring {
+        on
+        width 2
+        active-color   "#808080"
+    }
+    
+    border {
+        off
+    }
+    
+    shadow {
+        on
+        softness 30
+        spread 8
+        offset x=0 y=0
+        color "#000000"
+    }
+
+    tab-indicator {
+        active-color   "#ffb4a8"
+        inactive-color "#919191"
+        urgent-color   "#ffffff"
+    }
+
+    insert-hint {
+        color "#ffb4a880"
+    }
+}

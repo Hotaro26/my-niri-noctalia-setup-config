@@ -1,0 +1,17 @@
+// --- Environment Variables ---
+environment {
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+    XDG_SESSION_DESKTOP "niri"
+    XDG_MENU_PREFIX "plasma-"
+    QT_QPA_PLATFORM "wayland"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    QT_QPA_PLATFORMTHEME "kde"
+    QT_STYLE_OVERRIDE "kvantum"
+    // Firefox
+    MOZ_ENABLE_WAYLAND "1"
+    // SDL
+    SDL_VIDEODRIVER "wayland"
+    // Electron / Chromium
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+}

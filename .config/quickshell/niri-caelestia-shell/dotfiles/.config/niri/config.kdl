@@ -1,0 +1,17 @@
+// ============================================================================
+// MAIN NIRI CONFIGURATION (Modular)
+// ============================================================================
+
+include "niri/startup.kdl"
+include "niri/general.kdl"
+include "niri/environment.kdl"
+include "niri/input.kdl"
+include "niri/output.kdl"
+include "niri/layout.kdl"
+include "niri/animations.kdl"
+include "niri/gestures.kdl"
+include "niri/rules.kdl"
+include "niri/binds.kdl"
+include "niri/caelestia.kdl"
+
+include "colors.kdl"
