@@ -63,3 +63,8 @@ I've integrated a custom Night Light feature into the Caelestia dashboard.
 *   `.config/shell-switcher`: Source for the QML Switcher GUI.
 *   `.local/bin`: Custom wrapper scripts for the "Smart" logic.
 *   `pkglist-*.txt`: Snapshots of installed packages.
+
+
+<img width="1920" height="1078" alt="image" src="https://github.com/user-attachments/assets/9e0ebfc1-8e96-45ed-8b25-778d0a117242" />
+
+<img width="1920" height="1078" alt="image" src="https://github.com/user-attachments/assets/4f65f2f5-a7ce-48e1-9139-4335220a3ae2" />
